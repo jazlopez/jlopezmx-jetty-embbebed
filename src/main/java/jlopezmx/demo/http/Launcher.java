@@ -1,6 +1,7 @@
 package jlopezmx.demo.http;
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletHandler;
 
 public class Launcher {
 
@@ -12,17 +13,22 @@ public class Launcher {
 
     public static void main(String[] args) throws RuntimeException{
 
-//        ContextHandler contextHandler = new ContextHandler();
-//        contextHandler.setContextPath("/");
-
         final int PORT = 8060;
 
         try {
 
             Server server = new Server(PORT);
 
+            ServletHandler servletHandler = new ServletHandler();
+
+            servletHandler.addServletWithMapping(Servlet.class, "/*");
+
+            server.setHandler(servletHandler);
+
             server.start();
+
             server.join();
+
         } catch (InterruptedException e) {
 
             System.out.print(e.getMessage());

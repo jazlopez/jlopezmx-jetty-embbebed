@@ -1,0 +1,27 @@
+{
+  "config": {
+    "target": "http://0.0.0.0:8060",
+    "phases": [
+      {
+        "duration": 10,
+        "arrivalCount": 60
+      }
+    ],
+    "defaults": {
+      "headers": {
+        "x-my-service-auth": "987401838271002188298567"
+      }
+    }
+  },
+  "scenarios": [
+    {
+      "flow": [
+        {
+          "get": {
+            "url": "/",
+          }
+        }
+      ]
+    }
+  ]
+}

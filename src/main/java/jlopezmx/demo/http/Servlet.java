@@ -11,6 +11,8 @@ public class Servlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException {
 
+        System.out.println(req);
+
         response.setContentType("application/json; charset=UTF-8");
 
         response.setHeader("origin", "jlopez.mx");

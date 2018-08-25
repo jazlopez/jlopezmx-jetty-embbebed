@@ -7,7 +7,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.TreeMap;
 
 /**
@@ -120,7 +122,37 @@ public class Servlet extends HttpServlet {
 
                 throw new ServletException(e.getMessage());
             }
+    }
 
+    /**
+     * Log servlet stats to file in system
+     */
+    private void logServletStats() {
+
+        try {
+
+            PrintWriter writer = new PrintWriter(new FileWriter("stats.log"));
+
+            writer.print("Log Message stats:");
+            writer.print("\t");
+
+            for(String key : this.treeMap.keySet()){
+
+                log(String.format("%s: [%d]", key, Integer.parseInt(this.treeMap.get(key).toString())));
+
+                writer.printf("%s: [%d]", key, Integer.parseInt(this.treeMap.get(key).toString()));
+                writer.print("\t");
+
+            }
+            writer.print("===================================");
+            writer.print("\t");
+            writer.flush();
+            writer.close();
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -152,12 +184,7 @@ public class Servlet extends HttpServlet {
 
             log(String.format("Received messages for message.deviceId [%s] Total: [%d]", incoming.getDeviceId(), current));
 
-            log("Sorted tree map values:");
-
-            for(String key : this.treeMap.keySet()){
-
-                log(String.format("%s: [%d]", key, Integer.parseInt(this.treeMap.get(key).toString())));
-            }
+            logServletStats();
 
         }catch(JsonMappingException e) {
 

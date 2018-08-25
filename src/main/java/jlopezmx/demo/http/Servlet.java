@@ -134,18 +134,18 @@ public class Servlet extends HttpServlet {
             PrintWriter writer = new PrintWriter(new FileWriter("stats.log"));
 
             writer.print("Log Message stats:");
-            writer.print("\t");
+            writer.print("\n");
 
             for(String key : this.treeMap.keySet()){
 
                 log(String.format("%s: [%d]", key, Integer.parseInt(this.treeMap.get(key).toString())));
 
                 writer.printf("%s: [%d]", key, Integer.parseInt(this.treeMap.get(key).toString()));
-                writer.print("\t");
+                writer.print("\n");
 
             }
             writer.print("===================================");
-            writer.print("\t");
+            writer.print("\n");
             writer.flush();
             writer.close();
 

@@ -26,6 +26,36 @@ public class Servlet extends HttpServlet {
         getServletContext().log(log);
     }
 
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        Worker worker = new Worker();
+
+        log("doPost has been invoked");
+
+        log(String.format("Header inspect: amz-topic-arn [%s]",request.getHeader("amz-topic-arn")));
+
+        worker.write(request.getInputStream(), null, null);
+
+        try {
+
+
+            response.setContentType("application/json; charset=UTF-8");
+
+            response.setHeader("origin", "jlopez.mx");
+
+            response.setStatus(HttpServletResponse.SC_OK);
+
+            response.getWriter().println("OK");
+
+            log("doGet completed to process");
+
+        }catch (Exception e) {
+
+            throw new ServletException(e.getMessage());
+        }
+
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException {

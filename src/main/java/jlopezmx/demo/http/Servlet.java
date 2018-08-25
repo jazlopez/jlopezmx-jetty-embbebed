@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.TreeMap;
 
 /**
  * Jetty Embebbed Launcher
@@ -21,6 +22,8 @@ import java.io.IOException;
  */
 public class Servlet extends HttpServlet {
 
+
+    private TreeMap<String, Integer> treeMap;
     /**
      *
      */
@@ -32,6 +35,8 @@ public class Servlet extends HttpServlet {
     public Servlet() {
 
         this.objectMapper = new ObjectMapper();
+
+        this.treeMap = new TreeMap<String, Integer>();
     }
 
     /**
@@ -124,6 +129,8 @@ public class Servlet extends HttpServlet {
      */
     private void extractServletMessage(HttpServletRequest request){
 
+        int current = 0;
+
         log(String.format("Header inspect: amz-topic-arn [%s]",request.getHeader("amz-topic-arn")));
 
         log(String.format("Post Body Parameter: message [%s]", request.getParameter("message")));
@@ -133,6 +140,17 @@ public class Servlet extends HttpServlet {
 
             log(String.format("Incoming message.deviceId [%s]", incoming.getDeviceId()));
             log(String.format("Incoming message.timestamp [%s]", incoming.getTimestamp()));
+
+            if(this.treeMap.containsKey(incoming.getDeviceId())) {
+
+                current = Integer.parseInt(this.treeMap.get(incoming.getDeviceId()).toString());
+            }
+
+            current++;
+
+            this.treeMap.put(incoming.getDeviceId(),current);
+
+            log(String.format("Received messages for message.deviceId [%s] Total: [%d]", incoming.getDeviceId(), current));
 
         }catch(JsonMappingException e) {
 

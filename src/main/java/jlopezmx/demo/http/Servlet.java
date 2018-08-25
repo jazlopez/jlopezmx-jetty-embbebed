@@ -152,6 +152,13 @@ public class Servlet extends HttpServlet {
 
             log(String.format("Received messages for message.deviceId [%s] Total: [%d]", incoming.getDeviceId(), current));
 
+            log("Sorted tree map values:");
+
+            for(String key : this.treeMap.keySet()){
+
+                log(String.format("%s: [%d]", key, Integer.parseInt(this.treeMap.get(key).toString())));
+            }
+
         }catch(JsonMappingException e) {
 
             e.printStackTrace();

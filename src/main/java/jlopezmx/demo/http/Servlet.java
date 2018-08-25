@@ -1,19 +1,37 @@
 package jlopezmx.demo.http;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 
+/**
+ * Jetty Embebbed Launcher
+ *
+ * Jaziel Lopez, Software Engineer, BC, Mexico
+ *
+ * juan.jaziel@gmail.com
+ *
+ * https://jlopez.mx
+ *
+ */
 public class Servlet extends HttpServlet {
 
-    String log;
+    /**
+     *
+     */
+    private ObjectMapper objectMapper;
 
-    private Date getNow() {
+    /**
+     *
+     */
+    public Servlet() {
 
-        return new Date();
+        this.objectMapper = new ObjectMapper();
     }
 
     /**
@@ -26,6 +44,13 @@ public class Servlet extends HttpServlet {
         getServletContext().log(log);
     }
 
+    /**
+     *
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -33,7 +58,7 @@ public class Servlet extends HttpServlet {
 
         log("doPost has been invoked");
 
-        log(String.format("Header inspect: amz-topic-arn [%s]",request.getHeader("amz-topic-arn")));
+        extractServletMessage(request);
 
         worker.write(request.getInputStream(), null, null);
 
@@ -48,7 +73,7 @@ public class Servlet extends HttpServlet {
 
             response.getWriter().println("OK");
 
-            log("doGet completed to process");
+            log("doPost completed to process");
 
         }catch (Exception e) {
 
@@ -57,6 +82,13 @@ public class Servlet extends HttpServlet {
 
     }
 
+    /**
+     *
+     * @param req
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException {
 
@@ -84,5 +116,30 @@ public class Servlet extends HttpServlet {
                 throw new ServletException(e.getMessage());
             }
 
+    }
+
+    /**
+     *
+     * @param request
+     */
+    private void extractServletMessage(HttpServletRequest request){
+
+        log(String.format("Header inspect: amz-topic-arn [%s]",request.getHeader("amz-topic-arn")));
+
+        log(String.format("Post Body Parameter: message [%s]", request.getParameter("message")));
+
+        try {
+            Message incoming = this.objectMapper.readValue(request.getParameter("message"), Message.class);
+
+            log(String.format("Incoming message.deviceId [%s]", incoming.getDeviceId()));
+            log(String.format("Incoming message.timestamp [%s]", incoming.getTimestamp()));
+
+        }catch(JsonMappingException e) {
+
+            e.printStackTrace();
+        }catch (IOException e) {
+
+            e.printStackTrace();
+        }
     }
 }
